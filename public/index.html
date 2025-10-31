@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydrater - X Content Automation</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Login Page -->
+    <div id="login-page" class="page">
+      <div class="container">
+        <h1>🚀 Hydrater</h1>
+        <p class="subtitle">Automate your X (Twitter) content with AI</p>
+        <button onclick="login()" class="btn btn-primary">Login with X</button>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="page hidden">
+      <nav class="navbar">
+        <h2>Hydrater</h2>
+        <div class="nav-right">
+          <span id="username"></span>
+          <button onclick="logout()" class="btn btn-small">Logout</button>
+        </div>
+      </nav>
+
+      <div class="container">
+        <!-- Profile Setup -->
+        <section id="profile-section" class="card">
+          <h3>Profile Setup</h3>
+          <form id="profile-form">
+            <div class="form-group">
+              <label>Interests (comma separated)</label>
+              <input type="text" id="interests" placeholder="AI, Technology, Startups">
+            </div>
+            <div class="form-group">
+              <label>Brand Direction</label>
+              <textarea id="brand-direction" placeholder="Professional, innovative, forward-thinking"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Author Style</label>
+              <textarea id="author-style" placeholder="Conversational, informative, with occasional humor"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Target Audience</label>
+              <input type="text" id="target-audience" placeholder="Tech professionals, entrepreneurs">
+            </div>
+            <div class="form-group">
+              <label>Tone</label>
+              <select id="tone">
+                <option value="professional">Professional</option>
+                <option value="casual">Casual</option>
+                <option value="enthusiastic">Enthusiastic</option>
+                <option value="informative">Informative</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Profile</button>
+          </form>
+        </section>
+
+        <!-- Actions -->
+        <section class="card">
+          <h3>Content Actions</h3>
+          <div class="button-group">
+            <button onclick="analyzeTendency()" class="btn">Analyze My Posting Style</button>
+            <button onclick="crawlContent()" class="btn">Crawl Latest News</button>
+            <button onclick="generateDrafts()" class="btn btn-primary">Generate Drafts</button>
+          </div>
+          <div id="action-status" class="status-message"></div>
+        </section>
+
+        <!-- Drafts -->
+        <section class="card">
+          <h3>Your Drafts</h3>
+          <div class="filter-tabs">
+            <button onclick="filterDrafts('all')" class="tab active" data-filter="all">All</button>
+            <button onclick="filterDrafts('generated')" class="tab" data-filter="generated">Generated</button>
+            <button onclick="filterDrafts('edited')" class="tab" data-filter="edited">Edited</button>
+            <button onclick="filterDrafts('published')" class="tab" data-filter="published">Published</button>
+          </div>
+          <div id="drafts-list" class="drafts-list">
+            <p class="empty-state">No drafts yet. Click "Generate Drafts" to get started!</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
