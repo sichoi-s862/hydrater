@@ -5,11 +5,15 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "dev:client": "cd client && npm run dev",
+    "build": "tsc && cd client && npm run build",
+    "build:server": "tsc",
+    "build:client": "cd client && npm run build",
     "start": "node dist/index.js",
     "db:migrate": "node -r dotenv/config dist/db/migrate.js",
     "lint": "eslint src --ext .ts",
-    "test": "jest"
+    "test": "jest",
+    "install:all": "npm install && cd client && npm install"
   },
   "keywords": ["twitter", "automation", "content", "openai"],
   "author": "",
