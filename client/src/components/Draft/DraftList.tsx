@@ -104,28 +104,40 @@ const DraftList: React.FC<Props> = React.memo(({ onStatusChange, refreshTrigger 
     <Card>
       <h3>Drafts</h3>
 
-      <FilterTabs>
+      <FilterTabs role="tablist" aria-label="Draft status filter">
         <FilterTab
+          role="tab"
           active={filter === 'all'}
           onClick={() => setFilter('all')}
+          aria-selected={filter === 'all'}
+          aria-label="Show all drafts"
         >
           All
         </FilterTab>
         <FilterTab
+          role="tab"
           active={filter === 'generated'}
           onClick={() => setFilter('generated')}
+          aria-selected={filter === 'generated'}
+          aria-label="Show generated drafts only"
         >
           Generated
         </FilterTab>
         <FilterTab
+          role="tab"
           active={filter === 'edited'}
           onClick={() => setFilter('edited')}
+          aria-selected={filter === 'edited'}
+          aria-label="Show edited drafts only"
         >
           Edited
         </FilterTab>
         <FilterTab
+          role="tab"
           active={filter === 'published'}
           onClick={() => setFilter('published')}
+          aria-selected={filter === 'published'}
+          aria-label="Show published drafts only"
         >
           Published
         </FilterTab>

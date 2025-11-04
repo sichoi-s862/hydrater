@@ -121,22 +121,28 @@ const ContentActions: React.FC<Props> = React.memo(({ onStatusChange, onDraftsGe
   return (
     <Card>
       <h3>Content Actions</h3>
-      <ActionButtons>
+      <ActionButtons role="group" aria-label="Content action buttons">
         <ActionButton
           onClick={handleAnalyze}
           disabled={analyzing}
+          aria-label="Analyze your posting style from past tweets"
+          aria-busy={analyzing}
         >
           {analyzing ? 'Analyzing...' : 'Analyze My Posting Style'}
         </ActionButton>
         <ActionButton
           onClick={handleCrawl}
           disabled={crawling}
+          aria-label="Crawl latest news matching your interests"
+          aria-busy={crawling}
         >
           {crawling ? 'Crawling...' : 'Crawl Latest News'}
         </ActionButton>
         <ActionButton
           onClick={handleGenerate}
           disabled={generating}
+          aria-label="Generate new draft posts using AI"
+          aria-busy={generating}
         >
           {generating ? 'Generating...' : 'Generate Drafts'}
         </ActionButton>

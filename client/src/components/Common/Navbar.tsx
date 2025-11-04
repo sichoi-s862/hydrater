@@ -67,13 +67,13 @@ const Navbar: React.FC = React.memo(() => {
   const { user, logout } = useAuth();
 
   return (
-    <Nav>
+    <Nav role="navigation" aria-label="Main navigation">
       <Brand>
         <h2>Hydrater</h2>
       </Brand>
       <UserSection>
-        <Username>{user?.username || user?.displayName}</Username>
-        <LogoutButton onClick={logout}>
+        <Username aria-label="Current user">{user?.username || user?.displayName}</Username>
+        <LogoutButton onClick={logout} aria-label="Logout from your account">
           Logout
         </LogoutButton>
       </UserSection>
