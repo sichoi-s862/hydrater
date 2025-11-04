@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from '@emotion/styled';
 import type { UserProfile, StatusMessage } from '../../types';
 import { userAPI } from '../../services/api';
@@ -112,7 +112,7 @@ const SubmitButton = styled.button`
   }
 `;
 
-const ProfileForm: React.FC<Props> = ({ onStatusChange }) => {
+const ProfileForm: React.FC<Props> = React.memo(({ onStatusChange }) => {
   const [profile, setProfile] = useState<UserProfile>({
     interests: '',
     brandDirection: '',
@@ -122,20 +122,20 @@ const ProfileForm: React.FC<Props> = ({ onStatusChange }) => {
   });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
-
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     try {
       const data = await userAPI.getProfile();
       setProfile(data);
     } catch (error) {
       console.error('Failed to load profile:', error);
     }
-  };
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
+
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -153,14 +153,14 @@ const ProfileForm: React.FC<Props> = ({ onStatusChange }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [profile, onStatusChange]);
 
-  const handleChange = (
+  const handleChange = useCallback((
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
-  };
+  }, []);
 
   return (
     <Card>
@@ -235,6 +235,8 @@ const ProfileForm: React.FC<Props> = ({ onStatusChange }) => {
       </Form>
     </Card>
   );
-};
+});
+
+ProfileForm.displayName = 'ProfileForm';
 
 export default ProfileForm;

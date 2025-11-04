@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from '@emotion/styled';
 import type { Draft, StatusMessage } from '../../types';
 import { draftAPI } from '../../services/api';
@@ -155,12 +155,12 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   }
 `;
 
-const DraftCard: React.FC<Props> = ({ draft, onUpdate, onStatusChange }) => {
+const DraftCard: React.FC<Props> = React.memo(({ draft, onUpdate, onStatusChange }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(draft.content);
   const [loading, setLoading] = useState(false);
 
-  const handleEdit = async () => {
+  const handleEdit = useCallback(async () => {
     if (!isEditing) {
       setIsEditing(true);
       setEditedContent(draft.content);
@@ -189,9 +189,9 @@ const DraftCard: React.FC<Props> = ({ draft, onUpdate, onStatusChange }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isEditing, draft.content, draft.id, editedContent, onStatusChange, onUpdate]);
 
-  const handleRegenerate = async () => {
+  const handleRegenerate = useCallback(async () => {
     if (!confirm('Are you sure you want to regenerate this draft?')) {
       return;
     }
@@ -212,9 +212,9 @@ const DraftCard: React.FC<Props> = ({ draft, onUpdate, onStatusChange }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [draft.id, onStatusChange, onUpdate]);
 
-  const handlePublish = async () => {
+  const handlePublish = useCallback(async () => {
     if (!confirm('Are you sure you want to publish this draft?')) {
       return;
     }
@@ -235,9 +235,9 @@ const DraftCard: React.FC<Props> = ({ draft, onUpdate, onStatusChange }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [draft.id, onStatusChange, onUpdate]);
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     if (!confirm('Are you sure you want to delete this draft?')) {
       return;
     }
@@ -258,12 +258,12 @@ const DraftCard: React.FC<Props> = ({ draft, onUpdate, onStatusChange }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [draft.id, onStatusChange, onUpdate]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setIsEditing(false);
     setEditedContent(draft.content);
-  };
+  }, [draft.content]);
 
   return (
     <Card>
@@ -344,6 +344,8 @@ const DraftCard: React.FC<Props> = ({ draft, onUpdate, onStatusChange }) => {
       </Actions>
     </Card>
   );
-};
+});
+
+DraftCard.displayName = 'DraftCard';
 
 export default DraftCard;

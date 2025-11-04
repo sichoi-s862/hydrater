@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from '@emotion/styled';
 import type { Draft, DraftStatus, StatusMessage } from '../../types';
 import { draftAPI } from '../../services/api';
@@ -75,16 +75,12 @@ const NoDrafts = styled.p`
   font-size: ${({ theme }) => theme.fontSize.lg};
 `;
 
-const DraftList: React.FC<Props> = ({ onStatusChange, refreshTrigger }) => {
+const DraftList: React.FC<Props> = React.memo(({ onStatusChange, refreshTrigger }) => {
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [filter, setFilter] = useState<FilterType>('all');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadDrafts();
-  }, [filter, refreshTrigger]);
-
-  const loadDrafts = async () => {
+  const loadDrafts = useCallback(async () => {
     setLoading(true);
     try {
       const status = filter === 'all' ? undefined : filter;
@@ -98,7 +94,11 @@ const DraftList: React.FC<Props> = ({ onStatusChange, refreshTrigger }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, onStatusChange]);
+
+  useEffect(() => {
+    loadDrafts();
+  }, [loadDrafts, refreshTrigger]);
 
   return (
     <Card>
@@ -151,6 +151,8 @@ const DraftList: React.FC<Props> = ({ onStatusChange, refreshTrigger }) => {
       </DraftsContainer>
     </Card>
   );
-};
+});
+
+DraftList.displayName = 'DraftList';
 
 export default DraftList;

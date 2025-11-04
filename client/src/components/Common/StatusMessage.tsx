@@ -43,7 +43,7 @@ const StyledMessage = styled.div<{ type: 'success' | 'error' | 'info' | 'warning
   }
 `;
 
-const StatusMessage: React.FC<Props> = ({
+const StatusMessage: React.FC<Props> = React.memo(({
   message,
   onClose,
   autoHideDuration = 3000,
@@ -65,6 +65,8 @@ const StatusMessage: React.FC<Props> = ({
       {message.message}
     </StyledMessage>
   );
-};
+});
+
+StatusMessage.displayName = 'StatusMessage';
 
 export default StatusMessage;

@@ -63,7 +63,7 @@ const LogoutButton = styled.button`
   }
 `;
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC = React.memo(() => {
   const { user, logout } = useAuth();
 
   return (
@@ -79,6 +79,8 @@ const Navbar: React.FC = () => {
       </UserSection>
     </Nav>
   );
-};
+});
+
+Navbar.displayName = 'Navbar';
 
 export default Navbar;

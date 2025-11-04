@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from '@emotion/styled';
 import type { StatusMessage } from '../../types';
 import { contentAPI, draftAPI } from '../../services/api';
@@ -58,12 +58,12 @@ const ActionButton = styled.button`
   }
 `;
 
-const ContentActions: React.FC<Props> = ({ onStatusChange, onDraftsGenerated }) => {
+const ContentActions: React.FC<Props> = React.memo(({ onStatusChange, onDraftsGenerated }) => {
   const [analyzing, setAnalyzing] = useState(false);
   const [crawling, setCrawling] = useState(false);
   const [generating, setGenerating] = useState(false);
 
-  const handleAnalyze = async () => {
+  const handleAnalyze = useCallback(async () => {
     setAnalyzing(true);
     try {
       const response = await contentAPI.analyzeTendency();
@@ -79,9 +79,9 @@ const ContentActions: React.FC<Props> = ({ onStatusChange, onDraftsGenerated }) 
     } finally {
       setAnalyzing(false);
     }
-  };
+  }, [onStatusChange]);
 
-  const handleCrawl = async () => {
+  const handleCrawl = useCallback(async () => {
     setCrawling(true);
     try {
       const response = await contentAPI.crawlContent();
@@ -97,9 +97,9 @@ const ContentActions: React.FC<Props> = ({ onStatusChange, onDraftsGenerated }) 
     } finally {
       setCrawling(false);
     }
-  };
+  }, [onStatusChange]);
 
-  const handleGenerate = async () => {
+  const handleGenerate = useCallback(async () => {
     setGenerating(true);
     try {
       const response = await draftAPI.generate({ count: 3 });
@@ -116,7 +116,7 @@ const ContentActions: React.FC<Props> = ({ onStatusChange, onDraftsGenerated }) 
     } finally {
       setGenerating(false);
     }
-  };
+  }, [onStatusChange, onDraftsGenerated]);
 
   return (
     <Card>
@@ -143,6 +143,8 @@ const ContentActions: React.FC<Props> = ({ onStatusChange, onDraftsGenerated }) 
       </ActionButtons>
     </Card>
   );
-};
+});
+
+ContentActions.displayName = 'ContentActions';
 
 export default ContentActions;
