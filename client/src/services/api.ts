@@ -5,8 +5,9 @@ import type {
   DraftStatus,
   GenerateDraftsRequest,
 } from '../types';
+import { getEnv } from '../utils/env';
 
-const API_BASE = '';
+const API_BASE = getEnv().API_BASE_URL;
 
 async function fetchAPI<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
