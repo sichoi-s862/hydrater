@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import styled from '@emotion/styled';
 import type { Draft, DraftStatus, StatusMessage } from '../../types';
 import { draftAPI } from '../../services/api';
 import DraftCard from './DraftCard';
-import '../../styles/DraftList.css';
 
 interface Props {
   onStatusChange: (status: StatusMessage) => void;
@@ -10,6 +10,70 @@ interface Props {
 }
 
 type FilterType = 'all' | DraftStatus;
+
+const Card = styled.div`
+  background: ${({ theme }) => theme.colors.background};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  padding: ${({ theme }) => theme.spacing.xl};
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  box-shadow: ${({ theme }) => theme.boxShadow.md};
+
+  h3 {
+    margin-bottom: ${({ theme }) => theme.spacing.lg};
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+const FilterTabs = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  border-bottom: 2px solid ${({ theme }) => theme.colors.border};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+`;
+
+const FilterTab = styled.button<{ active: boolean }>`
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.lg};
+  background: none;
+  border: none;
+  border-bottom: 3px solid ${({ active, theme }) =>
+    active ? theme.colors.borderHover : 'transparent'};
+  cursor: pointer;
+  font-size: ${({ theme }) => theme.fontSize.base};
+  transition: all ${({ theme }) => theme.transition.base};
+  color: ${({ active, theme }) =>
+    active ? theme.colors.primary : theme.colors.textMuted};
+  font-weight: ${({ active, theme }) =>
+    active ? theme.fontWeight.medium : theme.fontWeight.normal};
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.backgroundAlt};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
+    font-size: ${({ theme }) => theme.fontSize.sm};
+    white-space: nowrap;
+  }
+`;
+
+const DraftsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+const NoDrafts = styled.p`
+  text-align: center;
+  color: ${({ theme }) => theme.colors.textLight};
+  padding: ${({ theme }) => theme.spacing['3xl']};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+`;
 
 const DraftList: React.FC<Props> = ({ onStatusChange, refreshTrigger }) => {
   const [drafts, setDrafts] = useState<Draft[]>([]);
@@ -37,43 +101,43 @@ const DraftList: React.FC<Props> = ({ onStatusChange, refreshTrigger }) => {
   };
 
   return (
-    <div className="card">
+    <Card>
       <h3>Drafts</h3>
 
-      <div className="filter-tabs">
-        <button
-          className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
+      <FilterTabs>
+        <FilterTab
+          active={filter === 'all'}
           onClick={() => setFilter('all')}
         >
           All
-        </button>
-        <button
-          className={`filter-tab ${filter === 'generated' ? 'active' : ''}`}
+        </FilterTab>
+        <FilterTab
+          active={filter === 'generated'}
           onClick={() => setFilter('generated')}
         >
           Generated
-        </button>
-        <button
-          className={`filter-tab ${filter === 'edited' ? 'active' : ''}`}
+        </FilterTab>
+        <FilterTab
+          active={filter === 'edited'}
           onClick={() => setFilter('edited')}
         >
           Edited
-        </button>
-        <button
-          className={`filter-tab ${filter === 'published' ? 'active' : ''}`}
+        </FilterTab>
+        <FilterTab
+          active={filter === 'published'}
           onClick={() => setFilter('published')}
         >
           Published
-        </button>
-      </div>
+        </FilterTab>
+      </FilterTabs>
 
-      <div className="drafts-container">
+      <DraftsContainer>
         {loading ? (
-          <p className="no-drafts">Loading drafts...</p>
+          <NoDrafts>Loading drafts...</NoDrafts>
         ) : drafts.length === 0 ? (
-          <p className="no-drafts">
+          <NoDrafts>
             No drafts yet. Generate some drafts to get started!
-          </p>
+          </NoDrafts>
         ) : (
           drafts.map((draft) => (
             <DraftCard
@@ -84,8 +148,8 @@ const DraftList: React.FC<Props> = ({ onStatusChange, refreshTrigger }) => {
             />
           ))
         )}
-      </div>
-    </div>
+      </DraftsContainer>
+    </Card>
   );
 };
 

@@ -1,13 +1,159 @@
 import React, { useState } from 'react';
+import styled from '@emotion/styled';
 import type { Draft, StatusMessage } from '../../types';
 import { draftAPI } from '../../services/api';
-import '../../styles/DraftCard.css';
 
 interface Props {
   draft: Draft;
   onUpdate: () => void;
   onStatusChange: (status: StatusMessage) => void;
 }
+
+const Card = styled.div`
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  padding: ${({ theme }) => theme.spacing.lg};
+  transition: all ${({ theme }) => theme.transition.base};
+  background: ${({ theme }) => theme.colors.background};
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.borderHover};
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.md};
+  }
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.xs};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+`;
+
+const StatusBadge = styled.span<{ status: string }>`
+  display: inline-block;
+  padding: 0.25rem ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+  text-transform: capitalize;
+  background: ${({ theme, status }) => {
+    const key = `status${status.charAt(0).toUpperCase() + status.slice(1)}` as 'statusGenerated' | 'statusEdited' | 'statusPublished';
+    return (theme.colors[key] as any)?.bg || theme.colors.warningBg;
+  }};
+  color: ${({ theme, status }) => {
+    const key = `status${status.charAt(0).toUpperCase() + status.slice(1)}` as 'statusGenerated' | 'statusEdited' | 'statusPublished';
+    return (theme.colors[key] as any)?.text || theme.colors.warningText;
+  }};
+`;
+
+const DateText = styled.span`
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+
+const Content = styled.p`
+  font-size: ${({ theme }) => theme.fontSize.lg};
+  line-height: 1.6;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const ContentEdit = styled.textarea`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.sm};
+  border: 2px solid ${({ theme }) => theme.colors.borderHover};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.fontSize.base};
+  font-family: inherit;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  resize: vertical;
+  background: ${({ theme }) => theme.colors.background};
+  color: ${({ theme }) => theme.colors.text};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primaryHover};
+  }
+`;
+
+const Source = styled.p`
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  a {
+    color: ${({ theme }) => theme.colors.primary};
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+const Actions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.xs};
+  flex-wrap: wrap;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 100%;
+
+    button {
+      flex: 1;
+      min-width: calc(50% - ${({ theme }) => theme.spacing.xs} / 2);
+    }
+  }
+`;
+
+const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
+  font-size: ${({ theme }) => theme.fontSize.sm};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  cursor: pointer;
+  transition: all ${({ theme }) => theme.transition.base};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+
+  ${({ theme, variant = 'secondary' }) =>
+    variant === 'primary'
+      ? `
+    background: ${theme.colors.primary};
+    color: ${theme.colors.textOnPrimary};
+
+    &:hover:not(:disabled) {
+      background: ${theme.colors.primaryHover};
+      transform: translateY(-2px);
+      box-shadow: ${theme.boxShadow.primary};
+    }
+  `
+      : `
+    background: ${theme.colors.backgroundAlt};
+    color: ${theme.colors.text};
+
+    &:hover:not(:disabled) {
+      background: ${theme.colors.border};
+    }
+  `}
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
 
 const DraftCard: React.FC<Props> = ({ draft, onUpdate, onStatusChange }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -120,88 +266,83 @@ const DraftCard: React.FC<Props> = ({ draft, onUpdate, onStatusChange }) => {
   };
 
   return (
-    <div className="draft-card">
-      <div className="draft-header">
-        <span className={`status-badge status-${draft.status}`}>
+    <Card>
+      <Header>
+        <StatusBadge status={draft.status}>
           {draft.status}
-        </span>
-        <span className="draft-date">
+        </StatusBadge>
+        <DateText>
           {new Date(draft.createdAt).toLocaleString()}
-        </span>
-      </div>
+        </DateText>
+      </Header>
 
       {isEditing ? (
-        <textarea
-          className="draft-content-edit"
+        <ContentEdit
           value={editedContent}
           onChange={(e) => setEditedContent(e.target.value)}
           rows={5}
           disabled={loading}
         />
       ) : (
-        <p className="draft-content">{draft.content}</p>
+        <Content>{draft.content}</Content>
       )}
 
       {draft.sourceUrl && (
-        <p className="draft-source">
+        <Source>
           Source: <a href={draft.sourceUrl} target="_blank" rel="noopener noreferrer">
             {draft.sourceUrl}
           </a>
-        </p>
+        </Source>
       )}
 
-      <div className="draft-actions">
+      <Actions>
         {isEditing ? (
           <>
-            <button
+            <Button
               onClick={handleEdit}
-              className="btn-primary btn-small"
+              variant="primary"
               disabled={loading}
             >
               {loading ? 'Saving...' : 'Save'}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleCancel}
-              className="btn-secondary btn-small"
               disabled={loading}
             >
               Cancel
-            </button>
+            </Button>
           </>
         ) : (
           <>
-            <button
+            <Button
               onClick={handleEdit}
-              className="btn-secondary btn-small"
               disabled={loading || draft.status === 'published'}
             >
               Edit
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleRegenerate}
-              className="btn-secondary btn-small"
               disabled={loading || draft.status === 'published'}
             >
               Regenerate
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handlePublish}
-              className="btn-primary btn-small"
+              variant="primary"
               disabled={loading || draft.status === 'published'}
             >
               {draft.status === 'published' ? 'Published' : 'Publish'}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleDelete}
-              className="btn-secondary btn-small"
               disabled={loading}
             >
               Delete
-            </button>
+            </Button>
           </>
         )}
-      </div>
-    </div>
+      </Actions>
+    </Card>
   );
 };
 
