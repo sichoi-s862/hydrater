@@ -1,0 +1,37 @@
+{
+  "name": "pw-v2",
+  "version": "1.0.0",
+  "description": "Personalized tweet generator with embedding-based style matching",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "twitter",
+    "embeddings",
+    "ai",
+    "personalization"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@qdrant/js-client-rest": "^1.16.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "openai": "^6.9.1",
+    "pg": "^8.16.3",
+    "twitter-api-v2": "^1.28.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.1",
+    "@types/pg": "^8.15.6",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

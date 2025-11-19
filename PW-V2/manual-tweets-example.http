@@ -1,0 +1,53 @@
+### 방법 1: 배열로 트윗 추가 (권장)
+POST http://localhost:3001/api/manual/add-tweets
+Content-Type: application/json
+
+{
+  "user_id": "dio",
+  "tweets": [
+    "Shipping builds momentum. Momentum builds confidence. Confidence builds companies.",
+    "You'll learn more in 2 weeks of launching than in 6 months of planning. Don't overthink it.",
+    "Every failed release turned into a lesson I wouldn't trade. You only lose if you stop shipping.",
+    "Building features is useless if nobody sees them. Shipping matters more.",
+    "Perfect is the enemy of shipped. Start messy, iterate fast."
+  ]
+}
+
+###
+
+### 방법 2: Quick Add (개별 필드)
+POST http://localhost:3001/api/manual/quick-add
+Content-Type: application/json
+
+{
+  "user_id": "dio",
+  "tweet1": "Shipping builds momentum. Momentum builds confidence.",
+  "tweet2": "You'll learn more in 2 weeks of launching than 6 months planning.",
+  "tweet3": "Every failed release = lesson. You only lose if you stop.",
+  "tweet4": "Building features nobody sees is useless. Ship it.",
+  "tweet5": "Perfect is the enemy of shipped. Start messy."
+}
+
+###
+
+### 드래프트 생성 테스트
+POST http://localhost:3001/api/drafts/generate
+Content-Type: application/json
+
+{
+  "user_id": "dio",
+  "idea": "AI tools are changing how we build products",
+  "num_variations": 3
+}
+
+###
+
+### 저장된 트윗 확인
+GET http://localhost:3001/api/tweets/dio
+
+###
+
+### 스타일 프로파일 확인
+GET http://localhost:3001/api/drafts/dio/profile
+
+###

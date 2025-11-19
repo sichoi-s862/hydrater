@@ -1,0 +1,75 @@
+### Health Check
+GET http://localhost:3001/health
+
+###
+
+### 1. Collect User Tweets
+POST http://localhost:3001/api/tweets/collect
+Content-Type: application/json
+
+{
+  "user_id": "YOUR_TWITTER_USER_ID",
+  "max_tweets": 100
+}
+
+###
+
+### 2. Get Stored Tweets
+GET http://localhost:3001/api/tweets/YOUR_TWITTER_USER_ID?limit=10&offset=0
+
+###
+
+### 3. Generate Tweet Drafts (Example 1)
+POST http://localhost:3001/api/drafts/generate
+Content-Type: application/json
+
+{
+  "user_id": "YOUR_TWITTER_USER_ID",
+  "idea": "Shipping builds momentum. Momentum builds confidence. Confidence builds companies.",
+  "num_variations": 3,
+  "top_k": 5
+}
+
+###
+
+### 4. Generate Tweet Drafts (Example 2)
+POST http://localhost:3001/api/drafts/generate
+Content-Type: application/json
+
+{
+  "user_id": "YOUR_TWITTER_USER_ID",
+  "idea": "Building features is useless if nobody sees them. Shipping matters more.",
+  "num_variations": 3
+}
+
+###
+
+### 5. Regenerate with Different Variations
+POST http://localhost:3001/api/drafts/regenerate
+Content-Type: application/json
+
+{
+  "user_id": "YOUR_TWITTER_USER_ID",
+  "idea": "Shipping builds momentum",
+  "previous_drafts": [
+    "First draft that wasn't good enough",
+    "Second draft that was too generic"
+  ]
+}
+
+###
+
+### 6. Get User's Draft History
+GET http://localhost:3001/api/drafts/YOUR_TWITTER_USER_ID?limit=10
+
+###
+
+### 7. Get User's Style Profile
+GET http://localhost:3001/api/drafts/YOUR_TWITTER_USER_ID/profile
+
+###
+
+### 8. Delete User Tweets and Embeddings
+DELETE http://localhost:3001/api/tweets/YOUR_TWITTER_USER_ID
+
+###
